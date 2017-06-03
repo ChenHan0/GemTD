@@ -35,8 +35,13 @@ public class CreateObj : MonoBehaviour {
                 else
                     targetPos.z -= 0.5f;
                 //Debug.Log((int)hitPos.z);
-                go = Instantiate(Obj);
-                go.transform.position = targetPos;
+                if (ObstacleMatrix.CheckSquare(targetPos))
+                {
+                    go = Instantiate(Obj);
+                    go.transform.position = targetPos;
+                }
+
+                
             }
         }        
     }    
