@@ -15,15 +15,19 @@ public class NavPlayer : MonoBehaviour {
     // Use this for initialization
     void Start () {
         nav = GetComponent<NavMeshAgent>();
+        
         nav.destination = points[currentPoint++];
     }
 	
 	// Update is called once per frame
 	void Update () {
+        Debug.Log(nav.hasPath);
         if (Mathf.Abs(nav.remainingDistance) < 0.01)
         {
             if (currentPoint < points.Length)
-                nav.destination = points[currentPoint++];
+            {
+                nav.destination = points[currentPoint++];                
+            }                
         }
     }
 }
