@@ -11,6 +11,6 @@ public class SetupObstacleMatrix : MonoBehaviour {
 
     void OnGUI()
     {
-        GUI.TextArea(new Rect(10, 10, 250, 350), ObstacleMatrix.MatrixToString());
+        //GUI.TextArea(new Rect(10, 10, 250, 350), ObstacleMatrix.MatrixToString());
     }
 }

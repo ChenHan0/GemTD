@@ -10,14 +10,16 @@ public class EnemyUnitManager : MonoBehaviour {
     public bool pathAvailable;
     public NavMeshPath navMeshPath;
 
-	// Use this for initialization
+    public PathPoints Points;
+
 	void Start () {
         navMeshPath = new NavMeshPath();
+
+        
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
-	    if (CalculateNewPath() == true)
+        if (CalculateNewPath() == true)
         {
             pathAvailable = true;
             print("Path available");
@@ -27,7 +29,43 @@ public class EnemyUnitManager : MonoBehaviour {
             pathAvailable = false;
             print("Path not available");
         }
-	}
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            Debug.Log(CalculatePath());
+        }
+    }
+
+    public bool CalculatePath()
+    {
+
+        //for (int i = 0; i < Points.Points.Length; i++)
+        //{
+        //    spawnPosition.CalculatePath(Points.Points[i].position, navMeshPath);
+
+        //    if (navMeshPath.status != NavMeshPathStatus.PathComplete)
+        //    {
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        spawnPosition.transform.position = Points.Points[i].position;
+        //    }
+        //}
+
+        //return true;
+
+        spawnPosition.CalculatePath(Points.Points[Points.Points.Length - 1].position, navMeshPath);
+
+        if (navMeshPath.status != NavMeshPathStatus.PathComplete)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 
     bool CalculateNewPath()
     {

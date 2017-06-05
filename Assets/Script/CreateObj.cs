@@ -4,7 +4,10 @@ using System.Collections;
 public class CreateObj : MonoBehaviour {
     public GameObject Obj;
 
+    public EnemyUnitManager enemyUnitManager;
+
     private GameObject go;
+    private GameObject PreviousObj;
 
     Vector3 hitPos;
     Vector3 targetPos;
@@ -37,12 +40,23 @@ public class CreateObj : MonoBehaviour {
                 //Debug.Log((int)hitPos.z);
                 if (ObstacleMatrix.CheckSquare(targetPos))
                 {
-                    go = Instantiate(Obj);
-                    go.transform.position = targetPos;
-                }
-
-                
+                        go = Instantiate(Obj);
+                        go.transform.position = targetPos;
+                        PreviousObj = go;
+                }                
             }
-        }        
-    }    
+        }
+
+
+        CheckPath();   
+    }   
+    
+    void CheckPath()
+    {
+        if (!enemyUnitManager.CalculatePath()) {
+            if (PreviousObj)
+                PreviousObj.GetComponent<Obstacle>().DestroySelf();
+            Debug.Log("There is no path!");
+        }            
+    } 
 }

@@ -7,4 +7,10 @@ public class Obstacle : MonoBehaviour {
 	void Start () {
         ObstacleMatrix.RegisterSquare(transform.position, false);
 	}
+
+    public void DestroySelf()
+    {
+        ObstacleMatrix.RegisterSquare(transform.position, true);
+        Destroy(gameObject);
+    }
 }

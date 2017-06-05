@@ -1,33 +1,61 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class NavPlayer : MonoBehaviour {
-    public Vector3[] points = { new Vector3(-7.5f, 0.5f, -0.5f),
-                                new Vector3(7.5f, 0.5f, -0.5f),
-                                new Vector3(7.5f, 0.5f, 7.5f),
-                                new Vector3(0.5f, 0.5f, 7.5f),
-                                new Vector3(0.5f, 0.5f, -7.5f),
-                                new Vector3(8.5f, 0.5f, -7.5f)};
+    public PathPoints PathPoints;
+
+    private Transform[] points = { };
 
     private int currentPoint = 0;
 
-    private NavMeshAgent nav;
-    // Use this for initialization
+    //public EnemyUnitManager unitManager;
+
+    private NavMeshAgent unit;
+
+    private bool isChangeTarget = false;
+
+    //private NavMeshPath path;
+
     void Start () {
-        nav = GetComponent<NavMeshAgent>();
-        
-        nav.destination = points[currentPoint++];
+        points = PathPoints.Points;
+
+        unit = GetComponent<NavMeshAgent>();
+
+        unit.destination = points[currentPoint++].position;
+
+        //path = new NavMeshPath();
     }
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log(nav.hasPath);
-        if (Mathf.Abs(nav.remainingDistance) < 0.01)
+        //float dist = agent.remainingDistance;
+        //if(unit.remainingDistance != Mathf.Infinity && unit.pathStatus == NavMeshPathStatus.PathComplete && unit.remainingDistance == 0)
+        if (Mathf.Abs(unit.remainingDistance) < 0.01 && !isChangeTarget)
         {
+            isChangeTarget = true;
             if (currentPoint < points.Length)
             {
-                nav.destination = points[currentPoint++];                
-            }                
+                Debug.Log(points[currentPoint]);
+                unit.destination = points[currentPoint++].position;
+            }
         }
+
+        if (Mathf.Abs(unit.remainingDistance) > 0.01 && isChangeTarget)
+        {
+            isChangeTarget = false;
+        }
+        //if (Input.GetButtonDown("Jump"))
+        //{
+        //    Debug.Log("!!!!!!!!!!!");
+        //    if (unitManager.pathAvailable == false)
+        //    {
+        //        Debug.Log("Path not available");
+        //    }
+        //    else
+        //    {
+        //        unit.SetPath(unitManager.GetComponent<EnemyUnitManager>().navMeshPath);
+        //    }
+        //}
     }
 }
