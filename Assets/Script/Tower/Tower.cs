@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 
 public class Tower : MonoBehaviour {
 
@@ -10,10 +10,15 @@ public class Tower : MonoBehaviour {
     protected float previousAttackTime;
     [HideInInspector]
     public GameObject Traget;
+    [HideInInspector]
+    public List<GameObject> Enemies;
+
+    public string TowerCore;
 
     void Start()
     {
         previousAttackTime = Time.time;
+        Enemies = new List<GameObject>();
     }
     
 
@@ -28,6 +33,11 @@ public class Tower : MonoBehaviour {
 
     public virtual void AttackBehavior()
     {
-        //System.Text.RegularExpressions.Regex.IsMatch();
+        
+    }
+
+    public void DestroySelf()
+    {
+        Destroy(gameObject);
     }
 }

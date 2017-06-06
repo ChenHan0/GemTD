@@ -13,6 +13,7 @@ public class ShowAttackRaidus : MonoBehaviour {
     // Use this for initialization  
     void Start()
     {
+        Physics.queriesHitTriggers = false;
         angle = 360f / pointCount;
         renderer = GetComponent<LineRenderer>();
         if (!renderer)
