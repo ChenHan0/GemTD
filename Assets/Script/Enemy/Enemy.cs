@@ -29,6 +29,7 @@ public class Enemy : MonoBehaviour {
 
     public virtual void Dead()
     {
+        EnemyManager.RemoveEnemy(gameObject);
         Destroy(gameObject);
     }
 }

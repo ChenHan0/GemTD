@@ -6,7 +6,7 @@ public class DeTower : Tower
     void Start()
     {
         //Debug.Log(previousAttackTime);
-        TowerCore = "DeTower";
+        //TowerCore = "DeTower";
 
         //Debug.Log(TowerManager.GetRegularExpression(new string[] { "a", "b", "c" }));
         //Debug.Log(TowersInfo.TowerUpgradeFormulas.GetLength(0));

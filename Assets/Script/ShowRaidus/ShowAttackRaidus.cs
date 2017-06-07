@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(Tower))]
 public class ShowAttackRaidus : MonoBehaviour {
 
     public int pointCount = 10;
-    public float radius = 10f;
+    float radius;
     private float angle;
     private List<Vector3> points = new List<Vector3>();
     private LineRenderer renderer;
@@ -14,6 +15,7 @@ public class ShowAttackRaidus : MonoBehaviour {
     void Start()
     {
         Physics.queriesHitTriggers = false;
+        radius = GetComponent<Tower>().AttackRange;
         angle = 360f / pointCount;
         renderer = GetComponent<LineRenderer>();
         if (!renderer)

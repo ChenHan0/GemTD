@@ -22,7 +22,7 @@ public class EnemyUnitManager : MonoBehaviour {
         if (CalculateNewPath() == true)
         {
             pathAvailable = true;
-            print("Path available");
+            //print("Path available");
         }
         else
         {
@@ -70,7 +70,7 @@ public class EnemyUnitManager : MonoBehaviour {
     bool CalculateNewPath()
     {
         spawnPosition.CalculatePath(targetPosition, navMeshPath);
-        print("New path calculated");
+        //print("New path calculated");
 
         if (navMeshPath.status != NavMeshPathStatus.PathComplete)
         {

@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿    using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class NavPlayer : MonoBehaviour {
     public PathPoints PathPoints;
+
+    public bool isMove = false;
 
     private Transform[] points = { };
 
@@ -18,11 +20,11 @@ public class NavPlayer : MonoBehaviour {
     //private NavMeshPath path;
 
     void Start () {
-        points = PathPoints.Points;
+        points = Camera.main.GetComponent<PathPoints>().Points;
 
         unit = GetComponent<NavMeshAgent>();
 
-        unit.destination = points[currentPoint++].position;
+        //unit.destination = points[currentPoint++].position;
 
         //path = new NavMeshPath();
     }
@@ -31,20 +33,23 @@ public class NavPlayer : MonoBehaviour {
 	void Update () {
         //float dist = agent.remainingDistance;
         //if(unit.remainingDistance != Mathf.Infinity && unit.pathStatus == NavMeshPathStatus.PathComplete && unit.remainingDistance == 0)
-        if (Mathf.Abs(unit.remainingDistance) < 0.01 && !isChangeTarget)
+        if (isMove)
         {
-            isChangeTarget = true;
-            if (currentPoint < points.Length)
+            if (Mathf.Abs(unit.remainingDistance) < 0.01 && !isChangeTarget)
             {
-                Debug.Log(points[currentPoint]);
-                unit.destination = points[currentPoint++].position;
+                isChangeTarget = true;
+                if (currentPoint < points.Length)
+                {
+                    //Debug.Log(points[currentPoint]);
+                    unit.destination = points[currentPoint++].position;
+                }
             }
-        }
-
-        if (Mathf.Abs(unit.remainingDistance) > 0.01 && isChangeTarget)
-        {
-            isChangeTarget = false;
-        }
+            if (Mathf.Abs(unit.remainingDistance) > 0.01 && isChangeTarget)
+            {
+                isChangeTarget = false;
+            }
+        }    
+        
         //if (Input.GetButtonDown("Jump"))
         //{
         //    Debug.Log("!!!!!!!!!!!");
@@ -57,5 +62,11 @@ public class NavPlayer : MonoBehaviour {
         //        unit.SetPath(unitManager.GetComponent<EnemyUnitManager>().navMeshPath);
         //    }
         //}
+    }
+
+    public void StartMove()
+    {
+        unit.destination = points[currentPoint++].position;
+        isMove = true;
     }
 }

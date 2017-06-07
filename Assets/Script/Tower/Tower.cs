@@ -9,7 +9,7 @@ public class Tower : MonoBehaviour {
     public float AttackInterval;
     protected float previousAttackTime;
     [HideInInspector]
-    public GameObject Traget;
+    public GameObject Traget = null;
     [HideInInspector]
     public List<GameObject> Enemies;
 
@@ -20,7 +20,20 @@ public class Tower : MonoBehaviour {
         previousAttackTime = Time.time;
         Enemies = new List<GameObject>();
     }
-    
+
+    protected void LookAtTraget()
+    {
+        if (Traget)
+        {
+            transform.LookAt(Traget.transform);
+            Vector3 rotation = transform.rotation.eulerAngles;
+            transform.rotation = Quaternion.Euler(new Vector3(0, rotation.y, 0));
+        }
+        else
+        {
+            transform.rotation = Quaternion.identity;
+        }
+    }
 
     public void Attack()
     {
