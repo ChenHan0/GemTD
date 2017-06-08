@@ -5,7 +5,7 @@ public class GameStateManager : MonoBehaviour {
 
     private static GameState m_pCurrentState;
 
-    void Start()
+    void Awake()
     {
         m_pCurrentState = null;
     }

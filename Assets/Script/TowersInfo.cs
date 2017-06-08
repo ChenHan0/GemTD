@@ -21,6 +21,22 @@ public class TowersInfo
             { "J3", "K3", "L3" }    // M2
         };  // 12
 
+    public static string[] UpgradedTowerCoder =
+    {
+        "J1",
+        "K1",
+        "L1",
+        "J2",
+        "K2",
+        "L2",
+        "J3",
+        "K3",
+        "L3",
+        "M1",
+        "M2",
+        "M3",
+    };
+
     public static string[] GetTowerUpgradeFormulasWithRow(int row)
     {
         if (row >= TowerUpgradeFormulas.GetLength(0))

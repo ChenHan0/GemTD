@@ -13,12 +13,19 @@ public class Tower : MonoBehaviour {
     [HideInInspector]
     public List<GameObject> Enemies;
 
-    public string TowerCore;
+    public string TowerCode;
+
+    public GameObject TowerBase;
+
+    public float SupplantDistance = 1.5f;
+
+    public List<GameObject> UIs;
 
     void Start()
     {
         previousAttackTime = Time.time;
         Enemies = new List<GameObject>();
+        UIs = new List<GameObject>();
     }
 
     protected void LookAtTraget()
@@ -47,6 +54,19 @@ public class Tower : MonoBehaviour {
     public virtual void AttackBehavior()
     {
         
+    }
+
+    void OnMouseDown()
+    {
+        Debug.Log("Tower");
+        UIs = UIManager.GetUI(this.gameObject);
+        if (UIs.Count > 0)
+        {
+            foreach (GameObject go in UIs)
+            {
+                Debug.Log(go.name);
+            }
+        }
     }
 
     public void DestroySelf()

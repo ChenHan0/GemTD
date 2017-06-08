@@ -11,6 +11,6 @@ public class Obstacle : MonoBehaviour {
     public void DestroySelf()
     {
         ObstacleMatrix.RegisterSquare(transform.position, true);
-        Destroy(gameObject);
+        Destroy(transform.parent.gameObject);
     }
 }

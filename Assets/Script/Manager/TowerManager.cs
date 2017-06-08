@@ -9,11 +9,26 @@ public class TowerManager : MonoBehaviour {
     public GameObject[] LevelTwoTowerPrefabs;
 
     public GameObject[] LevelThreeTowerPrefabs;
+    
+    /// <summary>
+    /// 当前选择的塔
+    /// </summary>
+    private static Tower CurrentChooseTower;
+
+    /// <summary>
+    /// 全局可升级塔的代号列表
+    /// </summary>
+    public static List<string> AllUpgradableTowerCodes;
+
+    /// <summary>
+    /// 当前回合可升级塔的代号列表
+    /// </summary>
+    public static List<string> CurrentUpgradableTowerCodes;
 
     /// <summary>
     /// 由当前游戏中所有塔组成的List
     /// </summary>
-    static List<Tower> AllTowersList;
+    public static List<Tower> AllTowersList;
 
     /// <summary>
     /// 由当前回合建造的塔所组成的List
@@ -32,14 +47,18 @@ public class TowerManager : MonoBehaviour {
     });
 
     void Start () {
+        CurrentChooseTower = null;
+
         AllTowersList = new List<Tower>();
 
         CurrentTimeTowersList = new List<Tower>();
 
         enemyUnitManager = gameObject.GetComponent<EnemyUnitManager>();
+
+        AllUpgradableTowerCodes = new List<string>();
 	}
 
-    #region BuildTower
+    #region ------BuildTower------
     public void BuildTower()
     {
         if (Input.GetMouseButtonDown(0))
@@ -51,7 +70,7 @@ public class TowerManager : MonoBehaviour {
                 hitPos = hit.point;
                 //Debug.DrawLine(Camera.main.transform.position, hitPos, Color.red);
                 //Debug.Log(hitPos);
-                targetPos = new Vector3(((int)hitPos.x), 0.5f, ((int)hitPos.z));
+                targetPos = new Vector3(((int)hitPos.x), 0.0f, ((int)hitPos.z));
                 if (hitPos.x >= 0)
                     targetPos.x += 0.5f;
                 else
@@ -89,7 +108,7 @@ public class TowerManager : MonoBehaviour {
             if (PreviousObj)
             {
                 CurrentTimeTowersList.Remove(PreviousObj.GetComponent<Tower>());
-                PreviousObj.GetComponent<Obstacle>().DestroySelf();
+                PreviousObj.transform.GetChild(0).GetComponent<Obstacle>().DestroySelf();
             }
                 
             Debug.Log("There is no path!");
@@ -164,6 +183,19 @@ public class TowerManager : MonoBehaviour {
     #endregion
     #endregion
 
+    /// <summary>
+    /// 判断某个塔是否符合升级要求
+    /// </summary>
+    /// <param name="tower">某个塔</param>
+    public static bool IsUpgradableInAll(Tower tower)
+    {
+        return AllUpgradableTowerCodes.Contains(tower.TowerCode);
+    }
+
+    public static bool IsUpgradableInCurrent(Tower tower)
+    {
+        return AllUpgradableTowerCodes.Contains(tower.TowerCode);
+    }
 
     /// <summary>
     /// 往全局塔列表中添加元素
@@ -206,6 +238,7 @@ public class TowerManager : MonoBehaviour {
                 Tower t = CurrentTimeTowersList[i];
                 if (!t.Equals(tower))
                 {
+                    t.TowerBase.AddComponent<TowerBase>();
                     t.DestroySelf();
                 }
             }
@@ -214,6 +247,7 @@ public class TowerManager : MonoBehaviour {
         }
     }
 
+    /// <summary>
     /// 检查塔是否符合升级公式
     /// </summary>
     /// <param name="TowersCoresString">需要检查的塔形成的字符串(全局塔或当前回合塔)</param>
@@ -252,10 +286,101 @@ public class TowerManager : MonoBehaviour {
 
         for (int i = 0; i < list.Count; i++)
         {
-            str += list[i].TowerCore;
+            str += list[i].TowerCode;
         }
 
         return str;
+    }
+
+    /// <summary>
+    /// 从全局塔中升级塔
+    /// </summary>
+    /// <param name="tower">当前选择的塔</param>
+    public static void UpgradeFormAllTower(Tower tower)
+    {
+        string[] codes = null;
+        int no = 0;
+        for (int i = 0; i < TowersInfo.TowerUpgradeFormulas.GetLength(0); i++)
+        {
+            for (int j = 0; j < TowersInfo.GetTowerUpgradeFormulasWithRow(i).Length; j++)
+            {
+                if (tower.TowerCode.Equals(TowersInfo.GetTowerUpgradeFormulasWithRow(i)[j]))
+                {
+                    codes = TowersInfo.GetTowerUpgradeFormulasWithRow(i);
+                    no = i;
+                    break;
+                }
+
+            }
+            
+        }
+
+        Vector3 towerPos = tower.transform.position;
+
+        //List<GameObject> towers = new List<GameObject>();
+        for (int i = 0; i < codes.Length; i++)
+        {
+            //towers.Add(GetTowerFromAllByCode(codes[i]).gameObject);
+            GetTowerFromAllByCode(codes[i]).DestroySelf();
+            AllTowersList.Remove(GetTowerFromAllByCode(codes[i]));
+        }
+
+        Debug.Log(TowersInfo.UpgradedTowerCoder[no]);
+
+        GameObject newTower = Instantiate(Resources.Load(TowersInfo.UpgradedTowerCoder[no], typeof(GameObject)),
+            towerPos, Quaternion.identity) as GameObject;
+    }
+
+    /// <summary>
+    /// 从当前回合塔中升级
+    /// </summary>
+    /// <param name="tower">选择的塔</param>
+    public static void UpgradeFormCurrentTower(Tower tower)
+    {
+        int no = 0;
+        for (int i = 0; i < TowersInfo.TowerUpgradeFormulas.GetLength(0); i++)
+        {
+            for (int j = 0; j < TowersInfo.GetTowerUpgradeFormulasWithRow(i).Length; j++)
+            {
+                if (tower.TowerCode.Equals(TowersInfo.GetTowerUpgradeFormulasWithRow(i)[j]))
+                {
+                    no = i;
+                    break;
+                }
+
+            }
+
+        }
+
+        ChooseTowerInCurrentTime(tower);
+
+        Vector3 towerPos = tower.transform.position;
+
+        Debug.Log(TowersInfo.UpgradedTowerCoder[no]);
+
+        GameObject newTower = Instantiate(Resources.Load(TowersInfo.UpgradedTowerCoder[no], typeof(GameObject)),
+            towerPos, Quaternion.identity) as GameObject;
+        newTower.transform.parent = tower.transform.parent;
+
+        tower.DestroySelf();
+    }
+
+    /// <summary>
+    /// 通过代号从全局塔中获得塔
+    /// </summary>
+    /// <param name="code">塔的代号</param>
+    /// <returns>找到的塔</returns>
+    static Tower GetTowerFromAllByCode(string code)
+    {
+        Tower tower = null;
+
+        for (int i = 0; i < AllTowersList.Count; i++)
+        {
+            if (AllTowersList[i].TowerCode.Equals(code))
+                tower = AllTowersList[i];
+        }
+
+        return tower;
     }
 
     // (?=.*a)(?=.*b)(?=.*c)^.*$
@@ -278,28 +403,28 @@ public class TowerManager : MonoBehaviour {
         return RegularExpression;
     }
 
-    /// <summary>
-    /// 在全局塔中进行升级，销毁升级素材
-    /// </summary>
-    /// <param name="codes">升级素材代号</param>
-    /// <param name="newTower">新塔，用于加入全局塔列表</param>
-    static void UpgradeTowerWithAllTower(string[] codes, Tower newTower)
-    {
-        Tower tower;
-        for (int i = 0; i < codes.Length; i++)
-        {
-            for (int j = 0; j < AllTowersList.Count; j++)
-            {
-                if (AllTowersList[j].TowerCore.Equals(codes[i]))
-                {
-                    tower = AllTowersList[j];
-                    AllTowersList.Remove(tower);
-                    tower.DestroySelf();
-                    break;
-                }
-            }
-        }
+    ///// <summary>
+    ///// 在全局塔中进行升级，销毁升级素材
+    ///// </summary>
+    ///// <param name="codes">升级素材代号</param>
+    ///// <param name="newTower">新塔，用于加入全局塔列表</param>
+    //static void UpgradeTowerWithAllTower(string[] codes, Tower newTower)
+    //{
+    //    Tower tower;
+    //    for (int i = 0; i < codes.Length; i++)
+    //    {
+    //        for (int j = 0; j < AllTowersList.Count; j++)
+    //        {
+    //            if (AllTowersList[j].TowerCode.Equals(codes[i]))
+    //            {
+    //                tower = AllTowersList[j];
+    //                AllTowersList.Remove(tower);
+    //                tower.DestroySelf();
+    //                break;
+    //            }
+    //        }
+    //    }
 
-        AddTowerToAll(newTower);
-    }
+    //    AddTowerToAll(newTower);
+    //}
 }

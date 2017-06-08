@@ -27,6 +27,8 @@ public class Tower_F1 : Tower {
     {
         Attack();
         LookAtTraget();
+        if (Traget)
+            Debug.DrawLine(transform.position, Traget.transform.position, Color.red);
     }
 
     void OnTriggerEnter(Collider other)
