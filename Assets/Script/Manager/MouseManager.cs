@@ -71,7 +71,7 @@ public class MouseManager : MonoBehaviour {
                 mouseDownPos = mouseCurrentPos;
             }
 
-            Debug.Log("CurrentQuadrant" + CurrentQuadrant);
+            Debug.Log("CurrentQuadrant:" + CurrentQuadrant);
             Debug.Log("FinalQuadrant:" + FinalQuadrant);
         }        
     }

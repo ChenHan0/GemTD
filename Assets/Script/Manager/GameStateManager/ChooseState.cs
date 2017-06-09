@@ -33,6 +33,10 @@ public class ChooseState : GameState {
     public override void Execute()
     {
         //        
+        //foreach(var v in TowerManager.CurrentTimeTowersList)
+        //{
+        //    Debug.Log(TowerManager.IsUpgradableInCurrent(v));
+        //}
     }
 
     public override void Exit()

@@ -5,13 +5,16 @@ using System.Collections.Generic;
 public class Tower : MonoBehaviour {
 
     public int AttackValue;
+    public int currentAttackValue;
     public float AttackRange;
     public float AttackInterval;
+    public float currentInterval;
+    public bool IsAccelerated = false;
     protected float previousAttackTime;
     [HideInInspector]
     public GameObject Traget = null;
     [HideInInspector]
-    public List<GameObject> Enemies;
+    public Queue<GameObject> Enemies;
 
     public string TowerCode;
 
@@ -19,13 +22,14 @@ public class Tower : MonoBehaviour {
 
     public float SupplantDistance = 1.5f;
 
+    [HideInInspector]
     public List<GameObject> UIs;
 
     void Start()
     {
         previousAttackTime = Time.time;
-        Enemies = new List<GameObject>();
         UIs = new List<GameObject>();
+        currentInterval = AttackInterval;
     }
 
     protected void LookAtTraget()
@@ -36,15 +40,11 @@ public class Tower : MonoBehaviour {
             Vector3 rotation = transform.rotation.eulerAngles;
             transform.rotation = Quaternion.Euler(new Vector3(0, rotation.y, 0));
         }
-        else
-        {
-            transform.rotation = Quaternion.identity;
-        }
     }
 
-    public void Attack()
+    public virtual void Attack()
     {
-        if (Time.time - previousAttackTime > AttackInterval)
+        if (Time.time - previousAttackTime > currentInterval)
         {
             previousAttackTime = Time.time;
             AttackBehavior();            

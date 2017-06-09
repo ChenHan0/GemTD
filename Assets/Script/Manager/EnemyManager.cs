@@ -9,7 +9,13 @@ public class EnemyManager : MonoBehaviour {
 
     public float CreateInterval = 1;
 
-    public int EnemyNum = 10;
+    public int EnemyNum = 20;
+
+    public int[] EnemyHeathy;
+
+    public int[] EnemyDanaga;
+
+    private int currentWave = 0;
 
     private float CreateTime;
 
@@ -40,17 +46,24 @@ public class EnemyManager : MonoBehaviour {
     public IEnumerator Attack()
     {
         GameObject enemy;
-        for (int i = 0; i < EnemyNum; i++)
+        if (currentWave < EnemyHeathy.Length)
         {
-            //Debug.Log(Time.time - CreateTime > CreateInterval);
-            yield return new WaitUntil(() => (Time.time - CreateTime > CreateInterval));
-            //if (Time.time - CreateTime > CreateInterval)
-            CreateTime = Time.time;
-            enemy = Instantiate(Enemy, CreatePoint.position, Quaternion.Euler(new Vector3(0, 180, 0))) as GameObject;
-            enemy.GetComponent<NavPlayer>().isMove = true;
-            enemies.Add(enemy);    
-        }
-        isAttack = true;
+            for (int i = 0; i < EnemyNum; i++)
+            {
+                //Debug.Log(Time.time - CreateTime > CreateInterval);
+                yield return new WaitUntil(() => (Time.time - CreateTime > CreateInterval));
+                //if (Time.time - CreateTime > CreateInterval)
+                CreateTime = Time.time;
+                enemy = Instantiate(Enemy, CreatePoint.position, Quaternion.Euler(new Vector3(0, 180, 0))) as GameObject;
+                enemy.GetComponent<NavPlayer>().isMove = true;
+                enemy.GetComponent<Enemy>().Health = EnemyHeathy[currentWave];
+                enemy.GetComponent<Enemy>().Damaga = EnemyDanaga[currentWave]; 
+                enemies.Add(enemy);
+            }
+            isAttack = true;
+
+            currentWave++;
+        }        
     }
 
     public static void RemoveEnemy(GameObject enemy)

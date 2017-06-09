@@ -194,7 +194,7 @@ public class TowerManager : MonoBehaviour {
 
     public static bool IsUpgradableInCurrent(Tower tower)
     {
-        return AllUpgradableTowerCodes.Contains(tower.TowerCode);
+        return CurrentUpgradableTowerCodes.Contains(tower.TowerCode);
     }
 
     /// <summary>

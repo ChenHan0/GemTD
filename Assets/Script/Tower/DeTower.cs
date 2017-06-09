@@ -23,10 +23,10 @@ public class DeTower : Tower
         }
         else 
         {
-            if (Enemies.Count > 0)
+            if (Enemies != null)
             {
-                Traget = Enemies[0];
-                Enemies.Remove(Traget);
+                //Traget = Enemies[0];
+                //Enemies.Remove(Traget);
                 Traget.GetComponent<Enemy>().Hurt(AttackValue); 
             }
         }
@@ -48,7 +48,7 @@ public class DeTower : Tower
             }
             else if (Traget != null)
             {
-                Enemies.Add(Traget);
+                //Enemies.Add(Traget);
             }
         }
         
@@ -63,7 +63,7 @@ public class DeTower : Tower
         }
         else
         {
-            Enemies.Remove(other.gameObject);
+            //Enemies.Remove(other.gameObject);
         }
         //Debug.Log(Traget);
     }

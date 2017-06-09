@@ -18,6 +18,7 @@ public class EndPoint : MonoBehaviour {
         if (other.tag == "Enemy")
         {
             other.GetComponent<Enemy>().Dead();
+            HealthManager.Hurt(other.GetComponent<Enemy>().Damaga);
         }
     }
 }
