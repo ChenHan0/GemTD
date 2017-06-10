@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Data;
 using MySql.Data.MySqlClient;
+
 
 public class CMySql : MonoBehaviour
 {
@@ -16,22 +19,38 @@ public class CMySql : MonoBehaviour
     private string strCommand = "Select Username from user ;";
     public static DataSet MyObj;
 
-    void OnGUI()
+    public InputField UserName;
+    public InputField Password;
+    public Text hint;
+    private string username;
+    private string password;
+    private float timer;
+    private bool CanRegister = true;
+    private bool ClickLogin = false;
+
+    //void OnGUI()
+    //{
+    //    host = GUILayout.TextField(host, 200, GUILayout.Width(200));
+    //    id = GUILayout.TextField(id, 200, GUILayout.Width(200));
+    //    pwd = GUILayout.TextField(pwd, 200, GUILayout.Width(200));
+    //    if (GUILayout.Button("Test"))
+    //    {
+    //        string connectionString = string.Format("Server = {0}; Database = {1}; User ID = {2}; Password = {3};", host, database, id, pwd);
+    //        openSqlConnection(connectionString);
+    //        MyObj = GetDataSet(strCommand);
+
+    //        //读取数据函数  
+    //        ReaderData();
+
+    //    }
+    //    GUILayout.Label(result);
+    //}
+
+    void Start()
     {
-        host = GUILayout.TextField(host, 200, GUILayout.Width(200));
-        id = GUILayout.TextField(id, 200, GUILayout.Width(200));
-        pwd = GUILayout.TextField(pwd, 200, GUILayout.Width(200));
-        if (GUILayout.Button("Test"))
-        {
-            string connectionString = string.Format("Server = {0}; Database = {1}; User ID = {2}; Password = {3};", host, database, id, pwd);
-            openSqlConnection(connectionString);
-            MyObj = GetDataSet(strCommand);
-
-            //读取数据函数  
-            ReaderData();
-
-        }
-        GUILayout.Label(result);
+        string connectionString = string.Format("Server = {0}; Database = {1}; User ID = {2}; Password = {3};", host, database, id, pwd);
+        openSqlConnection(connectionString);
+        MyObj = GetDataSet(strCommand);
     }
 
     // On quit    
@@ -96,7 +115,26 @@ public class CMySql : MonoBehaviour
             {
                 if (reader.HasRows)
                 {
-                    print("Username:" + reader.GetString(0) + "--Pwd：" + reader.GetString(1));
+                    string name = reader.GetString(0);
+                    string pwd = reader.GetString(1);
+                    if (username == name && !ClickLogin)
+                    {
+                        hint.text = "该用户已存在！";
+                        CanRegister = false;
+                    } 
+                    else if (username == name && ClickLogin)
+                    {
+                        if (pwd == password)
+                        {
+                            CanRegister = false;
+                            SceneManager.LoadScene(1);
+                        }
+                        else
+                        {
+                            CanRegister = false;
+                            hint.text = "密码错误";
+                        }
+                    }
                 }
             }
         }
@@ -108,5 +146,56 @@ public class CMySql : MonoBehaviour
         {
             reader.Close();
         }
+    }
+
+    public DataSet InsertInto(string tableName, string[] values)
+    {
+        DataSet ds = new DataSet();
+        string query = "INSERT INTO " + tableName + " VALUES (" + "'" + values[0] + "'," + "'" + values[1] + "')";
+        Debug.Log(query);
+        MySqlDataAdapter da = new MySqlDataAdapter(query, dbConnection);
+        da.Fill(ds);
+        return ds;
+    }
+    public void Register()
+    {
+        ClickLogin = false;
+        CanRegister = true;
+        username = UserName.text;
+        password = Password.text;
+
+        if (username == "" ||
+            password == "")
+        {
+            hint.text = "用户名或密码不能为空";
+            return;
+        }
+
+        string[] newUser = { username, password };
+        ReaderData();
+        if (CanRegister)
+        {
+            InsertInto("user", newUser);
+            hint.text = "注册成功！";
+        }
+    }
+
+    public void Login()
+    {
+        ClickLogin = true;
+        CanRegister = true;
+        username = UserName.text;
+        password = Password.text;
+        string[] User = { username, password };
+        ReaderData();
+        if (CanRegister)
+        {
+            hint.text = "该用户不存在！";
+        }
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
     }
 }

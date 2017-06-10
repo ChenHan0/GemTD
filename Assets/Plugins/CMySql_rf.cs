@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using System.Data;
 using MySql.Data.MySqlClient;
 
-public class CMySql : MonoBehaviour
+public class CMySql_rf : MonoBehaviour
 {
     public static MySqlConnection dbConnection;//Just like MyConn.conn in StoryTools before    
     static string host = "127.0.0.1";

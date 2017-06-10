@@ -24,7 +24,7 @@ public class TowerBase : MonoBehaviour {
             if (Input.GetAxis("Mouse X") >= 0.8f)
             {
                 OnMouseUp();
-                Destroy(transform.parent.gameObject);
+                GetComponent<Obstacle>().DestroySelf();
             }
         }
     }
