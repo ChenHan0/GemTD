@@ -7,13 +7,13 @@ using MySql.Data.MySqlClient;
 public class CMySql : MonoBehaviour
 {
     public static MySqlConnection dbConnection;//Just like MyConn.conn in StoryTools before    
-    static string host = "54.169.71.90";
+    static string host = "127.0.0.1";
     static string id = "root";  //***不要变***  
-    static string pwd = "oulihong";  //密码  
-    static string database = "unity";//数据库名    
+    static string pwd = "234";  //密码  
+    static string database = "tower";//数据库名    
     static string result = "";
 
-    private string strCommand = "Select ID from unity ;";
+    private string strCommand = "Select Username from user ;";
     public static DataSet MyObj;
 
     void OnGUI()
@@ -88,7 +88,7 @@ public class CMySql : MonoBehaviour
     //读取数据函数  
     void ReaderData()
     {
-        MySqlCommand mySqlCommand = new MySqlCommand("Select * from unity;", dbConnection);
+        MySqlCommand mySqlCommand = new MySqlCommand("Select * from user;", dbConnection);
         MySqlDataReader reader = mySqlCommand.ExecuteReader();
         try
         {
@@ -96,7 +96,7 @@ public class CMySql : MonoBehaviour
             {
                 if (reader.HasRows)
                 {
-                    print("ID:" + reader.GetInt32(0) + "--Name：" + reader.GetString(1) + "--Sex：" + reader.GetString(2));
+                    print("Username:" + reader.GetString(0) + "--Pwd：" + reader.GetString(1));
                 }
             }
         }
