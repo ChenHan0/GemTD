@@ -9,9 +9,10 @@ public class LevelManager : MonoBehaviour {
 
     public static int[,] BuildProbability =
     {
-        { 1, 0, 0 },
-        { 7, 3, 0 },
-        { 2, 5, 3 },
+        { 9, 1, 0 },
+        { 4, 5, 1 },
+        { 3, 5, 2 },
+        { 1, 6, 3 },
     };
 
     void Start()

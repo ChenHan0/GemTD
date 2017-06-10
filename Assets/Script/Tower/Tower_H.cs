@@ -20,6 +20,7 @@ public class Tower_H : Tower
         if (Traget != null)
         {
             Traget.GetComponent<Enemy>().Hurt(AttackValue);
+            shebao(Traget);
             if (Random.Range(0,10) % 10 < DizzinessProbability)
             {
                 StartCoroutine(Dizziness(Traget.GetComponent<NavMeshAgent>()));
@@ -36,9 +37,11 @@ public class Tower_H : Tower
 
     IEnumerator Dizziness(NavMeshAgent agent)
     {
-        agent.Stop();
+        if (agent)
+            agent.Stop();
         yield return new WaitForSeconds(1);
-        agent.Resume();
+        if (agent)
+            agent.Resume();
     }
 
     void Update()
@@ -98,7 +101,6 @@ public class Tower_H : Tower
             if (colliders.Length > 0)
             {
                 Collider collider = colliders[0];
-                Debug.Log(collider.gameObject.name);
                 float distance = collider.gameObject.GetComponent<Tower_C>().AttackRange;
                 if (Vector3.Distance(transform.position, collider.transform.position) <= distance)
                     towerC = collider.gameObject.GetComponent<Tower_C>();

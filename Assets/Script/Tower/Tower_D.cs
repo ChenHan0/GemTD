@@ -21,8 +21,9 @@ public class Tower_D : Tower
         if (Traget != null)
         {
             Traget.GetComponent<Enemy>().Hurt(AttackValue + extraAttackValue);
-            Debug.Log(AttackValue + extraAttackValue);
+            //Debug.Log(AttackValue + extraAttackValue);
             extraAttackValue += extraAttackStep;
+            shebao(Traget);
         }
         else
         {

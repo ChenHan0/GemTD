@@ -19,6 +19,7 @@ public class Tower_C : Tower
         if (Traget)
         {
             Traget.GetComponent<Enemy>().Hurt(AttackValue);
+            shebao(Traget);
         }
         else
         {
@@ -106,12 +107,6 @@ public class Tower_C : Tower
                 if (Enemies.Count > 0)
                     Enemies.Dequeue();
             }
-        }
-
-        if (other.GetComponent<Tower>() != null)
-        {
-            other.GetComponent<Tower>().currentInterval = AttackInterval;
-            other.GetComponent<Tower>().IsAccelerated = false;
         }
     }
 }

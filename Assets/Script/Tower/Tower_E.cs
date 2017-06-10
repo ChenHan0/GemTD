@@ -17,6 +17,17 @@ public class Tower_E : Tower
         towerE = new List<Tower_E>();
     }
 
+    public override void AttackBehavior()
+    {
+        if (towerE.Count > 0)
+        {
+            for (int i = 0; i < towerE.Count; i++)
+            {
+                shebao(towerE[i].gameObject);
+            }
+        }
+    }
+
     void CheckotherTowerE()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, AttackRange, 1 << LayerMask.NameToLayer("E"));
@@ -24,7 +35,9 @@ public class Tower_E : Tower
         {
             for (int i = 0; i < colliders.Length; i++)
             {
-                towerE.Add(colliders[i].gameObject.GetComponent<Tower_E>());
+                if (colliders[i].gameObject != gameObject &&
+                    !towerE.Contains(colliders[i].gameObject.GetComponent<Tower_E>()))
+                    towerE.Add(colliders[i].gameObject.GetComponent<Tower_E>());
             }
         }
     }

@@ -9,21 +9,28 @@ public class Tower : MonoBehaviour {
     public float AttackRange;
     public float AttackInterval;
     public float currentInterval;
-    public bool IsAccelerated = false;
     protected float previousAttackTime;
     [HideInInspector]
     public GameObject Traget = null;
     [HideInInspector]
     public Queue<GameObject> Enemies;
 
+    private bool isChoose = false;
+
     public string TowerCode;
 
     public GameObject TowerBase;
 
-    public float SupplantDistance = 1.5f;
+    public float SupplantDistance = 0.78f;
 
     [HideInInspector]
     public List<GameObject> UIs;
+
+    public GameObject AttackEffect;
+    public Transform AttackPoint;
+    public float RayContinuousTime;
+
+    private GameObject AttackRangeObject;
 
     void Start()
     {
@@ -56,15 +63,80 @@ public class Tower : MonoBehaviour {
         
     }
 
+    public void shebao(GameObject go)
+    {
+        GameObject sb = Instantiate(AttackEffect, AttackPoint.transform.position, Quaternion.Euler(Vector3.zero)) as GameObject;
+        Debug.Log("go" + go.transform.position);
+        Debug.Log("sb" + sb.transform.position);
+        sb.transform.GetChild(2).position = go.transform.position;
+        //sb.transform.LookAt(go.transform);        
+        //sb.GetComponent<F3DBeam>().MaxBeamLength = Vector3.Distance(sb.transform.position, go.transform.position);
+        sb.GetComponent<LineRenderer>().SetPosition(1, go.transform.position - AttackPoint.transform.position);
+    }
+
     void OnMouseDown()
     {
-        Debug.Log("Tower");
-        UIs = UIManager.GetUI(this.gameObject);
+        if (GameStateManager.GetCurrentState().Equals(ChooseState.Instance)
+            || GameStateManager.GetCurrentState().Equals(EnemyAttackState.Instance))
+        {
+            AttackRangeObject = ShowRadius.Show(this);
+
+            UIs = UIManager.ShowUI(gameObject);
+        }
+
+        if (GameStateManager.GetCurrentState().Equals(EnemyAttackState.Instance))
+        {
+            isChoose = true;
+        }
+    }
+
+    void OnMouseDrag()
+    {
+        if (GameStateManager.GetCurrentState() == ChooseState.Instance)
+        {
+            if (Input.GetAxis("Mouse X") >= 0.8f)
+            {
+                OnMouseUp();
+                TowerManager.ChooseTowerInCurrentTime(GetComponent<Tower>());
+                GameStateManager.ChangeState(EnemyAttackState.Instance);
+                return;
+            }
+            else if (Input.GetAxis("Mouse X") <= -0.8f)
+            {
+                if (TowerManager.IsUpgradableInCurrent(this))
+                {
+                    OnMouseUp();
+                    TowerManager.UpgradeFormCurrentTower(this);
+                    GameStateManager.ChangeState(EnemyAttackState.Instance);
+                    return;
+                }
+            }
+        } 
+        else if (GameStateManager.GetCurrentState() == EnemyAttackState.Instance)
+        {
+            if (Input.GetAxis("Mouse X") >= 0.8f && isChoose)
+            {
+                Debug.Log("OnMouseDrag");
+                if (TowerManager.IsUpgradableInAll(this))
+                {
+                    OnMouseUp();
+                    TowerManager.UpgradeFormAllTower(this);
+                    return;
+                }
+            }
+        }
+    }
+
+    void OnMouseUp()
+    {
+        if (AttackRangeObject)
+            Destroy(AttackRangeObject);
+
         if (UIs.Count > 0)
         {
-            foreach (GameObject go in UIs)
+            foreach (var go in UIs)
             {
-                Debug.Log(go.name);
+                Destroy(go);
             }
         }
     }

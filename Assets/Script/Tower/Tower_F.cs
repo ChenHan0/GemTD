@@ -22,6 +22,7 @@ public class Tower_F : Tower
         if (Traget != null)
         {
             Traget.GetComponent<Enemy>().Hurt(AttackValue);
+            shebao(Traget);
         }
         else
         {

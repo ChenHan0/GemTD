@@ -36,6 +36,8 @@ public class EnemyManager : MonoBehaviour {
             isAttack = false;
             GameStateManager.ChangeState(BuildState.Instance);
         }
+
+
     }
 
     public void StartAttack()
@@ -63,6 +65,11 @@ public class EnemyManager : MonoBehaviour {
             isAttack = true;
 
             currentWave++;
+            if (currentWave == 5 || currentWave == 10||
+                currentWave == 15)
+            {
+                LevelManager.LevelUp();
+            }
         }        
     }
 

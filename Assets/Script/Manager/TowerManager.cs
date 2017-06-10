@@ -315,20 +315,25 @@ public class TowerManager : MonoBehaviour {
             
         }
 
-        Vector3 towerPos = tower.transform.position;
+        Vector3 towerPos = tower.transform.localPosition;
 
-        //List<GameObject> towers = new List<GameObject>();
+        //List<GameObject> towers = new List<GameObject>();        
+
+        Debug.Log(TowersInfo.UpgradedTowerCoder[no]);
+
+        GameObject go = Resources.Load("Tower_" + TowersInfo.UpgradedTowerCoder[no], typeof(GameObject)) as GameObject;
+
+        GameObject newTower = Instantiate(go, Vector3.zero, Quaternion.identity) as GameObject;
+        newTower.transform.parent = tower.transform.parent;
+        newTower.transform.localPosition = new Vector3(towerPos.x, go.transform.position.y, towerPos.z);
+        newTower.GetComponent<Tower>().TowerBase = tower.TowerBase;
+
         for (int i = 0; i < codes.Length; i++)
         {
             //towers.Add(GetTowerFromAllByCode(codes[i]).gameObject);
             GetTowerFromAllByCode(codes[i]).DestroySelf();
             AllTowersList.Remove(GetTowerFromAllByCode(codes[i]));
         }
-
-        Debug.Log(TowersInfo.UpgradedTowerCoder[no]);
-
-        GameObject newTower = Instantiate(Resources.Load(TowersInfo.UpgradedTowerCoder[no], typeof(GameObject)),
-            towerPos, Quaternion.identity) as GameObject;
     }
 
     /// <summary>
@@ -354,13 +359,16 @@ public class TowerManager : MonoBehaviour {
 
         ChooseTowerInCurrentTime(tower);
 
-        Vector3 towerPos = tower.transform.position;
+        Vector3 towerPos = tower.transform.localPosition;
 
         Debug.Log(TowersInfo.UpgradedTowerCoder[no]);
 
-        GameObject newTower = Instantiate(Resources.Load(TowersInfo.UpgradedTowerCoder[no], typeof(GameObject)),
-            towerPos, Quaternion.identity) as GameObject;
+        GameObject go = Resources.Load("Tower_" + TowersInfo.UpgradedTowerCoder[no], typeof(GameObject)) as GameObject;
+
+        GameObject newTower = Instantiate(go, Vector3.zero, Quaternion.identity) as GameObject;
         newTower.transform.parent = tower.transform.parent;
+        newTower.transform.localPosition = new Vector3(towerPos.x, go.transform.position.y, towerPos.z);
+        newTower.GetComponent<Tower>().TowerBase = tower.TowerBase;
 
         tower.DestroySelf();
     }

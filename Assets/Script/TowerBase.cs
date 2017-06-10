@@ -14,12 +14,28 @@ public class TowerBase : MonoBehaviour {
     void OnMouseDown()
     {
         Debug.Log(gameObject.name);
-        UIs = UIManager.GetUI(this.gameObject);
+        UIs = UIManager.ShowUI(this.gameObject);
+    }
+
+    void OnMouseDrag()
+    {
+        if (GameStateManager.GetCurrentState() == BuildState.Instance)
+        {
+            if (Input.GetAxis("Mouse X") >= 0.8f)
+            {
+                OnMouseUp();
+                Destroy(transform.parent.gameObject);
+            }
+        }
+    }
+
+    void OnMouseUp()
+    {
         if (UIs.Count > 0)
         {
-            foreach (GameObject go in UIs)
+            foreach (var go in UIs)
             {
-                Debug.Log(go.name);
+                Destroy(go);
             }
         }
     }

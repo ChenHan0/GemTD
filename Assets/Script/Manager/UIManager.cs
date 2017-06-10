@@ -6,11 +6,13 @@ public class UIManager : MonoBehaviour {
     static GameObject Confirm_UI;
     static GameObject Delete_UI;
     static GameObject Upgrade_UI;
+    static GameObject Background_UI;
 
     void Start () {
         Confirm_UI = Resources.Load("Confirm_UI", typeof(GameObject)) as GameObject;
         Delete_UI = Resources.Load("Delete_UI", typeof(GameObject)) as GameObject;
         Upgrade_UI = Resources.Load("Upgrade_UI", typeof(GameObject)) as GameObject;
+        Background_UI = Resources.Load("Background_UI", typeof(GameObject)) as GameObject;
     }
 
     /// <summary>
@@ -18,23 +20,35 @@ public class UIManager : MonoBehaviour {
     /// </summary>
     /// <param name="go">传入的物体</param>
     /// <returns>UI</returns>
-    public static List<GameObject> GetUI(GameObject go)
+    public static List<GameObject> ShowUI(GameObject go)
     {
         List<GameObject> result = new List<GameObject>();
+
+        Transform parent = go.transform.parent;
+        Vector3 pos = new Vector3(parent.position.x, 1.5f, parent.position.z);
+        GameObject ui = Instantiate(Background_UI, pos, Quaternion.Euler(0, 180, 0)) as GameObject;
+        result.Add(ui);
 
         if (go.GetComponent<Tower>() != null)
         {
             if (GameStateManager.GetCurrentState().Equals(ChooseState.Instance))
             {
-                result.Add(Confirm_UI);
+                ui = Instantiate(Confirm_UI, pos + new Vector3(0.78f, 0.05f, 0f), Quaternion.Euler(0, 180, 0)) as GameObject;
+                result.Add(ui);
 
                 // 天胡
+                if (TowerManager.IsUpgradableInCurrent(go.GetComponent<Tower>()))
+                {
+                    ui = Instantiate(Upgrade_UI, pos - new Vector3(0.78f, -0.05f, 0f), Quaternion.Euler(0, 180, 0)) as GameObject;
+                    result.Add(ui);
+                }
             }
             else if (GameStateManager.GetCurrentState().Equals(EnemyAttackState.Instance))
             {
                 if (TowerManager.IsUpgradableInAll(go.GetComponent<Tower>()))
                 {
-                    result.Add(Upgrade_UI);
+                    ui = Instantiate(Upgrade_UI, pos + new Vector3(0.78f, 0.05f, 0f), Quaternion.Euler(0, 180, 0)) as GameObject;
+                    result.Add(ui);
                 }
             }
         }
@@ -42,7 +56,8 @@ public class UIManager : MonoBehaviour {
         {
             if (GameStateManager.GetCurrentState().Equals(BuildState.Instance))
             {
-                result.Add(Delete_UI);
+                ui = Instantiate(Delete_UI, pos + new Vector3(0.78f, 0.05f, 0f), Quaternion.Euler(0, 180, 0)) as GameObject;
+                result.Add(ui);
             }
         }
 
